@@ -1,8 +1,7 @@
 #include "estacionamento.h"
 
-void constroi_pilha(int capacidade, t_estacionamento *p) {
+void constroi_pilha(t_estacionamento *p) {
     p->topo = 0;
-    p->capacidade = capacidade;
 }
 
 int estacionamento_vazio(t_estacionamento *p) {
@@ -10,12 +9,13 @@ int estacionamento_vazio(t_estacionamento *p) {
 }
 
 int estacionamento_cheio(t_estacionamento *p) {
-    return (p->topo == p->capacidade);
+    return (p->topo == MAX_CARROS);
 }
 
 int entra_carro(t_estacionamento *p, char placa[]) {
     if (estacionamento_cheio(p)) return 0;
     strcpy(p->carro[p->topo].placa, placa);
+    p->carro[p->topo].manobras = 0;
     p->topo++;
     return 1;
 }
@@ -25,36 +25,39 @@ int sai_carro(t_estacionamento *p) {
     p->topo--;
     return 1;
 }
-int manobrista(t_estacionamento *p, char placa[]) {
-    // Cria uma pilha auxiliar 
-    t_estacionamento aux;
-    constroi_pilha(10, &aux);
-    int manobras = 0;
-    int encontrado = 0;
 
-    while (!estacionamento_vazio(p) && !encontrado) {
-        // Pega o carro do topo da pilha
-        t_carro carro = p->carro[p->topo - 1];
-        // Verifica se é o carro procurado
-        if (strcmp(carro.placa, placa) == 0) {
-            // Remove o carro do estacionamento
-            sai_carro(p);
-            // Marca como encontrado
-            encontrado = 1;
-        } 
-        else{
-            // Se não for o carro, move para a pilha auxiliar
-            sai_carro(p);
-            entra_carro(&aux, carro.placa);
-            manobras++;
+int procurar_carro(t_estacionamento *p, char *placa){
+    for (int i = 0; i < p->topo; i++) {
+        if (strcmp(p->carro[i].placa, placa) == 0) {
+            return i;
         }
     }
-    // Restaura a pilha original
-    while (!estacionamento_vazio(&aux)) {
-        t_carro temp = aux.carro[aux.topo - 1];
-        sai_carro(&aux);
-        entra_carro(p, temp.placa);
+    return -1;
+}
+
+int manobrista(t_estacionamento *p, char placa[]) {
+    // Cria uma pilha auxiliar para guardar os carros 
+    t_estacionamento aux;
+    constroi_pilha(&aux);
+    int pos = procurar_carro(p, placa);
+    if (pos == -1) return 0;
+    // Remove os carros acima do que queremos tirar
+    while (p->topo > pos + 1) {
+        p->topo--;
+        // Incrementa o contador de manobras do carro que está sendo movido
+        p->carro[p->topo].manobras++;
+        // Move para a pilha temporária
+        aux.carro[aux.topo] = p->carro[p->topo];
+        aux.topo++;
     }
-    // Retorna o número de manobras se encontrou, ou -1 se não encontrou
-    return (encontrado ? manobras : -1);
+    sai_carro(p);
+    printf("Carro %s saiu com %d manobras.\n", p->carro[p->topo].placa, p->carro[p->topo].manobras);
+    // Devolve os carros manobrados
+    while (aux.topo > 0) {
+        aux.topo--;
+        p->carro[p->topo] = aux.carro[aux.topo];
+        p->topo++;
+    }
+    
+    return 1;
 }
