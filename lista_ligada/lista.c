@@ -38,7 +38,7 @@ void mostra_lista (t_lista *lista){
         printf  ("lista vazia\n");
     }
     else {
-        t_no * runner = lista->primeiro;
+        t_no *runner = lista->primeiro;
         while (runner != NULL){ // for (runner = lista->primeiro; runner != NULL; runner = runner->prox)
             printf("[%d] -> ", runner->info);
             runner = runner->prox;
@@ -84,4 +84,85 @@ int remove_fim (t_lista *lista){
         lista->ultimo = runner;
     }
     return temp;
+}
+
+int conta_elemento (t_lista *lista) {
+    int count = 0;
+    if(lista_vazia(lista)) return -1;
+    
+    t_no *runner = lista->primeiro;
+    while(runner != NULL){
+        count++;
+        runner = runner->prox;
+    }
+    return count;
+}
+
+int encontra_maior (t_lista *lista) {
+    // b)Encontrar o maior elemento da lista
+    if(lista_vazia(lista)) return -1;
+    int maior = lista->primeiro->info;
+    int temp;
+
+    t_no *runner = lista->primeiro;
+    while(runner != NULL){
+        temp = runner->info;
+        if(temp > maior){
+            maior = temp;
+        }
+        runner = runner->prox;
+    }
+    return maior;
+}
+
+int encontra_x (t_lista *lista, int x) {
+// c) Encontrar um elemento x na lista
+    if(lista_vazia(lista)) return -1;
+    int temp;
+
+    t_no *runner = lista->primeiro;
+
+    while(runner != NULL){
+        temp = runner->info;
+        if(temp == x) return temp;
+        runner = runner->prox;
+    }
+    return -1;
+}
+
+int conta_x (t_lista *lista, int x) {
+// d) Verificar quantas vezes o x aparece na lista
+    if(lista_vazia(lista)) return -1;
+    int count = 0;
+    int temp;
+
+    t_no *runner = lista->primeiro;
+
+    while(runner != NULL){
+        temp = runner->info;
+        if(temp == x){
+            count++;
+        }
+        runner = runner->prox;
+    }
+    return count;
+}
+
+void lista_pos (t_lista *lista, int x) {
+// e) Criar uma lista com as posições que o x aparece na lista
+    if(lista_vazia(lista)) -1;
+
+    int temp;
+    int count_pos = 0;
+    t_no *runner = lista->primeiro;
+    
+    printf("%d aparece nas posicoes ", x);
+    while(runner != NULL){
+        temp = runner->info;
+        if(temp == x){
+            printf("[%d] -> ", count_pos);
+        }
+        count_pos++;
+        runner = runner->prox;
+    }
 }
