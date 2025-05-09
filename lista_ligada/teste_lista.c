@@ -20,7 +20,8 @@ int main () {
     insere_inicio(89, &lista);
     insere_inicio(2, &lista);
     insere_inicio(20, &lista);
-    insere_inicio(89, &lista);  
+    insere_inicio(89, &lista); 
+     
 
     mostra_lista(&lista);
 

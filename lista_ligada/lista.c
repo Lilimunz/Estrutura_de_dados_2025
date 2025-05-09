@@ -87,6 +87,7 @@ int remove_fim (t_lista *lista){
 }
 
 int conta_elemento (t_lista *lista) {
+    // a)Contar os elementos
     int count = 0;
     if(lista_vazia(lista)) return -1;
     
